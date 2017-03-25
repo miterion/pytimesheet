@@ -1,0 +1,80 @@
+\documentclass[colorback, accentcolor=tud9d, paper=a4]{tudreport}
+\usepackage[ngerman]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx,tabularx,array}
+
+
+\begin{document}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{ #1}}
+\setlength{\unitlength}{\textwidth}
+\begin{minipage}{0.6\textwidth}
+\large Dokumentation der täglichen Arbeitszeit nach\\
+§14 Mindeslohngesetz für Minijobber
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+	\includegraphics[scale=0.27]{logo.png}
+	
+\end{minipage}
+\begin{center}
+		\parbox{40em}{
+			\begin{flushleft}
+			\color{red}WICHTIG:\\
+			Die  Aufzeichnungen  sind  mindestens  wöchentlich  zu  führen,  denn  der 
+			Arbeitgeber  "`ist  verpflichtet,  Beginn,  Ende  und  Dauer  der  täglichen 
+			Arbeitszeit dieser Arbeitnehmerinnen und Arbeitnehm	er spätestens bis zum 
+			Ablauf des siebten auf den Tag der Arbeitsleistung 
+			folgenden Kalendertages 
+			aufzuzeichnen und diese Aufzeichnungen mindestens zwei Jahre beginnend 
+			ab dem für die Aufzeichnung maßgeblichen Zeitpunkt 
+			aufzubewahren"'. 
+		\end{flushleft}	
+	}
+\end{center}
+\vspace{1em}
+\renewcommand{\arraystretch}{1.8}
+\begin{tabular}{l p{33em}}
+	\textbf{Einrichtung (Institut)}: & {{institute}}\\\cline{2-2}\noalign{\smallskip}
+	\textbf{Name, Vorname}: & {{name}}, {{firstname}}  \\\cline{2-2}\noalign{\smallskip}
+	\textbf{Geb. Datum}: &  {{birthday}} \\\cline{2-2}\noalign{\smallskip}
+\end{tabular}
+\\[3em]
+\begin{tabular}{l |p{14em} |p{14em}|}
+	\cline{2-3}
+	\textbf{Aufzeichnung für den Zeitraum} & \textbf{vom} {{ period.start }}& \textbf{bis} {{ period.end }} \\\cline{2-3}
+	
+\end{tabular}
+\\[1em]
+\begin{tabularx}{\textwidth}{|c|c|c|P{4em}|X|}
+	\hline
+	\textbf{Datum} & \textbf{Beginn} & \textbf{Ende}& \textbf{gesamt Stunden} & \textbf{Unterschrift Mitarbeiter*in}\\\hline
+	{% for day in workdays %}
+		{{ day.day }} & {{ day.start }} & {{ day.end }} & {{ day.hours }} & \\\hline
+	{% endfor %}
+	& & & &  \\\hline
+	& & & &  \\\hline
+	& & & &  \\\hline
+	& & & &  \\\hline
+	& & & &  \\\hline
+	& & & &  \\\hline
+	& & & &  \\\hline
+	& & & &  \\\hline
+	& & & &  \\\hline
+\end{tabularx}
+\\[4em]
+\begin{minipage}{0.35\textwidth}
+	Darmstadt, den \dotfill
+\end{minipage}
+\\[5em]
+\begin{minipage}{0.35\textwidth}
+	\begin{center}
+		\dotfill\\
+	\textbf{Unterschrift der/des Vorgesetzten}
+	\end{center}
+\end{minipage}\hspace{3cm}
+\begin{minipage}{0.35\textwidth}
+	\vspace{1em}
+	\textbf{Stempel der Einrichtung/ des Instituts}
+\end{minipage}
+
+
+\end{document}

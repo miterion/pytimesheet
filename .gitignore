@@ -1,0 +1,5 @@
+*
+!*.tex
+!*.py
+!.gitignore
+!*.png
