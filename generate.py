@@ -2,21 +2,23 @@ from jinja2 import Environment, FileSystemLoader
 from os import getcwd, path
 from tempfile import TemporaryDirectory, NamedTemporaryFile
 from subprocess import Popen, PIPE
-from shutil import copy
+from shutil import copy, copyfile
 from configparser import ConfigParser
 
 
-def latex(template, context, output='output.pdf'):
+def latex(template, context, job, month, output='output.pdf'):
     with TemporaryDirectory() as tmpdir:
-        copy('logo1.png', tmpdir)
+        copy('logo.png', tmpdir)
         process = Popen(['pdflatex'], stdin=PIPE, stdout=PIPE, cwd=tmpdir,)
         process.communicate(template.render(context).encode('utf-8'))
+        copyfile(path.join(tmpdir, 'texput.pdf'), path.join(getcwd(), 'job', str(job), str(month), output))
+        return
         with open(path.join(tmpdir, 'texput.pdf'), 'rb') as pdffile:
             pdf = pdffile.read()
             with open(output, 'wb') as outfile:
                 outfile.write(pdf)
 
-def pdf(job, period, workdays):
+def pdf(job, month, period, workdays):
     conffile = ConfigParser()
     conffile.read('config.ini')
     config = conffile['Default']
@@ -32,7 +34,7 @@ def pdf(job, period, workdays):
             'period': period,
             'workdays': workdays
             }
-    latex(templ, context)
+    latex(templ, context, job, str(month))
 
 def main():
     conffile = ConfigParser()

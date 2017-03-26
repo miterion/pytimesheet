@@ -35,7 +35,7 @@ def generate_pdf(args):
         fulldate = date(date.today().year, args.month, int(day['day']))
         day['day'] = fulldate.strftime('%d.%m.%Y')
 
-    generate.pdf(args.job, period, days)
+    generate.pdf(args.job, args.month, period, days)
      
 
 
