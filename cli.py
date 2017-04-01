@@ -69,13 +69,12 @@ def get_hours_or_die(job, month):
     return days, workmonth
 
 def is_standard_or_only_job(config):
-    jobs = []
-    if 'default_job' in config['Default']:
-        return True, config['Default']['default_job']
     jobs = config.sections()[1:]
+    if 'default_job' in config['Default']:
+        return jobs, config['Default']['default_job']
     if len(jobs) == 1:
-        return True, jobs[0]
-    return False, jobs
+        return jobs, jobs[0]
+    return jobs, jobs
 
 
 def main():
@@ -86,19 +85,15 @@ def main():
     conffile.read('config.ini')
     config = conffile['Default']
 
-    default, jobs = is_standard_or_only_job(conffile)
+    jobs, default = is_standard_or_only_job(conffile)
 
     #Parent parser for job/month selection
     parent_parser = argparse.ArgumentParser(add_help=False)
-    if default:
-        parent_parser.add_argument('job', 
+    parent_parser.add_argument('job', 
                 help='Job',
-                choices=(jobs), 
-                default=jobs,
+                choices=jobs, 
+                default=default,
                 nargs='?')
-    else:
-        parent_parser.add_argument('job', help='Job',
-                choices=jobs)
     parent_parser.add_argument('--month', '-m', 
             type = int, 
             help='Restrict to specific month (Default current Month)', 
