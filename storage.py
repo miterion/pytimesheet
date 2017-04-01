@@ -9,6 +9,7 @@ def newjob(job):
     folder.mkdir(exist_ok=True)
 
 def newmonth(job, month):
+    newjob(job)
     folder = Path(JOBSPATH).joinpath(job, str(month))
     folder.mkdir(exist_ok=True)
 
