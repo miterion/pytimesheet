@@ -23,7 +23,7 @@ def readdata(job, month, ordered=True):
     path = Path(JOBSPATH).joinpath(job, str(month), str(month)  + '.csv') 
     if not path.exists():
         return None
-    with Path(JOBSPATH).joinpath(job, str(month) + '.csv').open() as f:
+    with path.open() as f:
         fieldnames = ['day', 'start', 'end', 'hours']
         workdays = list(csv.DictReader(f, fieldnames))
         if ordered:
