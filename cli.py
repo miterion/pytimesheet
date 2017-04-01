@@ -68,6 +68,14 @@ def get_hours_or_die(job, month):
         print('No hours worked for {} in {}, {}'.format(job, workmonth.strftime('%B'), workmonth.year))
     return days, workmonth
 
+def is_standard_or_only_job(config):
+    jobs = []
+    if 'default_job' in config['Default']:
+        return True, config['Default']['default_job']
+    jobs = config.sections()[1:]
+    if len(jobs) == 1:
+        return True, jobs[0]
+    return False, jobs
 
 
 def main():
@@ -78,10 +86,19 @@ def main():
     conffile.read('config.ini')
     config = conffile['Default']
 
+    default, jobs = is_standard_or_only_job(conffile)
+
     #Parent parser for job/month selection
     parent_parser = argparse.ArgumentParser(add_help=False)
-    parent_parser.add_argument('job', help='Job',
-            choices=(config['jobs'].strip(',').split(',')))
+    if default:
+        parent_parser.add_argument('job', 
+                help='Job',
+                choices=(jobs), 
+                default=jobs,
+                nargs='?')
+    else:
+        parent_parser.add_argument('job', help='Job',
+                choices=jobs)
     parent_parser.add_argument('--month', '-m', 
             type = int, 
             help='Restrict to specific month (Default current Month)', 
@@ -104,9 +121,6 @@ def main():
     #Delete hours
     parser_delete = subparsers.add_parser('delete', help='Remove worked hours from schedule', parents=[parent_parser])
     parser_delete.set_defaults(func=delete_hours)
-
-    #Start working
-    #TODO
 
 
     args = parser.parse_args()
