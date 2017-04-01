@@ -3,6 +3,7 @@ from configparser import ConfigParser
 from datetime import date
 import calendar
 from collections import OrderedDict
+from datetime import timedelta
 
 import storage, generate
 
@@ -13,11 +14,14 @@ def print_hours(args):
         return
     print('Worked hours in {}, {}'.format(workmonth.strftime('%B'), workmonth.year))
     print('Day\tStart\tEnd\tDuration')
+    total_duration = timedelta()
     for day in days:
+        total_duration = total_duration + timedelta(hours=int(day['hours'].split(':')[0]))
         value = ''
         for key, values in day.items():
             value += values + '\t'
         print(value)
+    print('Total worked hours: {}'.format(total_duration.total_seconds() / 60**2))
 
 def generate_pdf(args):
     days, workmonth = get_hours_or_die(args.job, args.month) 
