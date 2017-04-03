@@ -50,15 +50,9 @@
 	{% for day in workdays %}
 		{{ day.day }} & {{ day.start }} & {{ day.end }} & {{ day.hours }} & \\\hline
 	{% endfor %}
+		{% for i in range(10 - workdays|count) %}
 	& & & &  \\\hline
-	& & & &  \\\hline
-	& & & &  \\\hline
-	& & & &  \\\hline
-	& & & &  \\\hline
-	& & & &  \\\hline
-	& & & &  \\\hline
-	& & & &  \\\hline
-	& & & &  \\\hline
+	{% endfor %}
 \end{tabularx}
 \\[4em]
 \begin{minipage}{0.35\textwidth}
