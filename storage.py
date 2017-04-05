@@ -20,6 +20,12 @@ def writedata(job, month, data):
         csvwriter = csv.writer(f)
         csvwriter.writerow([data['day'], data['start'], data['end'], hours])
 
+def writerawdata(job, month, rawdata):
+    newmonth(job, month)
+    with Path(JOBSPATH).joinpath(job, str(month), str(month)  + '.csv').open('w') as f:
+        writer = csv.DictWriter(f, fieldnames=['day', 'start', 'end', 'hours'])
+        writer.writerows(rawdata)
+
 def readdata(job, month, ordered=True):
     path = Path(JOBSPATH).joinpath(job, str(month), str(month)  + '.csv') 
     if not path.exists():

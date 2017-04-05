@@ -36,8 +36,6 @@ def generate_pdf(args):
         day['day'] = fulldate.strftime('%d.%m.%Y')
 
     generate.pdf(args.job, args.month, period, days)
-     
-
 
 def add_hours(args):
     storage.writedata(args.job, 
@@ -60,9 +58,11 @@ def delete_hours(args):
             value += values + '\t'
         print(value)
         counter += 1
-    print('\nWhich one should be deleted (Use , as a seperator')
+    print('\nWhich one should be deleted (Use , as a seperator)')
     selection = input()
-    print(selection.split(','))
+    newdays = [days[i] for i in range(len(days) - 1) if i + 1 not in map(int, selection.split(','))]
+    storage.writerawdata(args.job, args.month, newdays)
+    
 
     
 def get_hours_or_die(job, month):
@@ -71,6 +71,9 @@ def get_hours_or_die(job, month):
     if days is None:
         print('No hours worked for {} in {}, {}'.format(job, workmonth.strftime('%B'), workmonth.year))
     return days, workmonth
+
+def generate_hours(args):
+    pass
 
 def is_standard_or_only_job(config):
     jobs = config.sections()[1:]
@@ -120,6 +123,10 @@ def main():
     #Delete hours
     parser_delete = subparsers.add_parser('delete', help='Remove worked hours from schedule', parents=[parent_parser])
     parser_delete.set_defaults(func=delete_hours)
+
+    #Generate hours
+    parser_generate = subparsers.add_parser('generate', help='Generates random hours for a certain month', parents=[parent_parser])
+    parser_generate.set_defaults(func=generate_hours)
 
 
     args = parser.parse_args()
