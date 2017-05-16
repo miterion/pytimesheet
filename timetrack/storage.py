@@ -2,7 +2,7 @@ import csv
 from pathlib import Path
 from datetime import datetime
 
-JOBSPATH = "job"
+JOBSPATH = "../job"
 
 def newjob(job):
     folder = Path(JOBSPATH).joinpath(job)

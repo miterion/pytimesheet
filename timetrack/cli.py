@@ -4,6 +4,7 @@ from datetime import date
 import calendar
 from collections import OrderedDict
 from datetime import timedelta
+from functools import reduce
 
 import storage, generate
 
@@ -22,6 +23,7 @@ def print_hours(args):
             value += values + '\t'
         print(value)
     print('Total worked hours: {}'.format(total_duration.total_seconds() / 60**2))
+
 
 def generate_pdf(args):
     days, workmonth = get_hours_or_die(args.job, args.month) 
@@ -73,7 +75,13 @@ def get_hours_or_die(job, month):
     return days, workmonth
 
 def generate_hours(args):
-    pass
+    days, workmonth = get_hours_or_die(args.job, args.month)
+    worked_hours = map(lambda day: timedelta(hours=int(day['hours'].split(':')[0])), days)
+    total_duration = sum(worked_hours, timedelta())
+    needed_hours = int(args.conf[args.job]['hours']) - total_duration/timedelta(hours=1)
+    free_days = [x for x in calendar.Calendar().itermonthdays2(workmonth.year, workmonth.month) if x[0] not in map(lambda x: int(x['day']), days)]
+    free_days = filter(lambda x: x[1] not in (5,6) and x[0] != 0, free_days)
+
 
 def is_standard_or_only_job(config):
     jobs = config.sections()[1:]
@@ -89,7 +97,7 @@ def main():
     subparsers = parser.add_subparsers()
 
     conffile = ConfigParser()
-    conffile.read('config.ini')
+    conffile.read('../config.ini')
     config = conffile['Default']
 
     jobs, default = is_standard_or_only_job(conffile)
@@ -126,7 +134,7 @@ def main():
 
     #Generate hours
     parser_generate = subparsers.add_parser('generate', help='Generates random hours for a certain month', parents=[parent_parser])
-    parser_generate.set_defaults(func=generate_hours)
+    parser_generate.set_defaults(func=generate_hours, conf=conffile)
 
 
     args = parser.parse_args()
