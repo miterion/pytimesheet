@@ -1,14 +1,22 @@
 import csv
 from pathlib import Path
 from datetime import datetime
+from os.path import exists
+from os import makedirs
 
-JOBSPATH = "../job"
+from timetrack.utils import get_config_path
+JOBSPATH = Path(get_config_path()).joinpath('job')
+
+def newjobfolder():
+    if not exists(JOBSPATH):
+        makedirs(JOBSPATH, exist_ok=True)
 
 def newjob(job):
     folder = Path(JOBSPATH).joinpath(job)
     folder.mkdir(exist_ok=True)
 
 def newmonth(job, month):
+    newjobfolder()
     newjob(job)
     folder = Path(JOBSPATH).joinpath(job, str(month))
     folder.mkdir(exist_ok=True)

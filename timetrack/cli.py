@@ -5,8 +5,10 @@ import calendar
 from collections import OrderedDict
 from datetime import timedelta
 from functools import reduce
+from sys import argv
+from timetrack.utils import get_config
 
-import storage, generate
+from timetrack import storage, generate
 
 
 def print_hours(args):
@@ -96,8 +98,7 @@ def main():
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers()
 
-    conffile = ConfigParser()
-    conffile.read('../config.ini')
+    conffile = get_config()
     config = conffile['Default']
 
     jobs, default = is_standard_or_only_job(conffile)
@@ -135,8 +136,10 @@ def main():
     #Generate hours
     parser_generate = subparsers.add_parser('generate', help='Generates random hours for a certain month', parents=[parent_parser])
     parser_generate.set_defaults(func=generate_hours, conf=conffile)
-
-
+    
+    if len(argv) == 1:
+        parser.print_help()
+        return
     args = parser.parse_args()
     args.func(args)
 
