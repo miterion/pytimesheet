@@ -1,4 +1,4 @@
-from timetrack.utils import get_config, get_config_path
+from timetrack.utils import get_config, get_config_path, open_file
 
 from jinja2 import Environment, FileSystemLoader
 from os import getcwd, path
@@ -13,8 +13,10 @@ def latex(template, context, job, month, output='output.pdf'):
         copy('template/logo.png', tmpdir)
         process = Popen(['pdflatex'], stdin=PIPE, stdout=PIPE, cwd=tmpdir,)
         process.communicate(template.render(context).encode('utf-8'))
-        p = Path.cwd().parent
-        copyfile(path.join(tmpdir, 'texput.pdf'), path.join(get_config_path(), 'job', str(job), str(month), output))
+        outputpath = path.join(get_config_path(), 'job', str(job), str(month), output)
+        copyfile(path.join(tmpdir, 'texput.pdf'), outputpath)
+        print(outputpath)
+        open_file(outputpath) 
         return
         with open(path.join(tmpdir, 'texput.pdf'), 'rb') as pdffile:
             pdf = pdffile.read()
@@ -24,7 +26,6 @@ def latex(template, context, job, month, output='output.pdf'):
 def pdf(job, month, period, workdays):
     conffile = get_config()
     config = conffile['Default']
-    p = Path.cwd().parent
     env = Environment(
             loader=FileSystemLoader('template')
             )
