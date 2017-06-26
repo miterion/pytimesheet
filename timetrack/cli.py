@@ -6,8 +6,10 @@ from collections import OrderedDict
 from datetime import timedelta
 from functools import reduce
 from sys import argv
-from timetrack.utils import get_config
+from collections import namedtuple
+from random import choice
 
+from timetrack.utils import get_config
 from timetrack import storage, generate
 
 
@@ -78,12 +80,35 @@ def get_hours_or_die(job, month):
 
 def generate_hours(args):
     days, workmonth = get_hours_or_die(args.job, args.month)
-    worked_hours = map(lambda day: timedelta(hours=int(day['hours'].split(':')[0])), days)
-    total_duration = sum(worked_hours, timedelta())
+    if days is None:
+        total_duration = timedelta(hours=0)
+        free_days = [x for x in calendar.Calendar().itermonthdays2(workmonth.year, workmonth.month)]
+    else:
+        worked_hours = map(lambda day: timedelta(hours=int(day['hours'].split(':')[0])), days)
+        total_duration = sum(worked_hours, timedelta())
+        free_days = [x for x in calendar.Calendar().itermonthdays2(workmonth.year, workmonth.month) if x[0] not in map(lambda x: int(x['day']), days)]
     needed_hours = int(args.conf[args.job]['hours']) - total_duration/timedelta(hours=1)
-    free_days = [x for x in calendar.Calendar().itermonthdays2(workmonth.year, workmonth.month) if x[0] not in map(lambda x: int(x['day']), days)]
     free_days = filter(lambda x: x[1] not in (5,6) and x[0] != 0, free_days)
-
+    jobtuple = namedtuple('jobtuple', ['job', 'month', 'day', 'hours'])
+    jobtuple.job = args.job
+    jobtuple.month = args.month
+    workhours = (8,9,10,11,12,13,14,15,16,17)
+    worktime = (0,1,2,3,4,5)
+    while needed_hours >= 0:
+        for day in free_days:
+            hours = choice(worktime)
+            if hours > needed_hours:
+                hours = int(needed_hours)
+            if hours != 0:
+                jobtuple.day = day[0]
+                start = choice(workhours)
+                hourlist = [start, start + hours]
+                jobtuple.hours = hourlist
+                add_hours(jobtuple)
+                needed_hours = needed_hours - hours
+            else:
+                return
+                
 
 def is_standard_or_only_job(config):
     jobs = config.sections()[1:]
