@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-        name='timetrack',
+        name='pytimesheet',
         version='0.0.1',
         license='GPL',
         install_requires =['Jinja2'],
@@ -9,7 +9,7 @@ setup(
         include_package_data=True,
         entry_points={
             'console_scripts': [
-                'timetrack=timetrack.cli:main',
+                'pytimetrack=pytimetrack.cli:main',
             ],
         }
 )
