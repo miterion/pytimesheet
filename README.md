@@ -1,14 +1,18 @@
-# timetrack
+# timesheet
 Timetracking for hiwis at TU Darmstadt
 
 ## Install
 Run `python setup.py` as root or with the `--user` flag.
 
-It will install and generate a config file in `$HOME/.config/timetrack` for you to edit.
+It will install and generate a config file in `$HOME/.config/timesheet` for you to edit.
+
+**OR**
+
+Run `pip install pytimesheet`
 
 ## Usage
 ```
-usage: timetrack [-h] {print,pdf,add,delete,generate} ...
+usage: timesheet [-h] {print,pdf,add,delete,generate} ...
 
 positional arguments:
   {print,pdf,add,delete,generate}
