@@ -17,8 +17,9 @@ def get_config():
     return conffile
 
 def mk_userconfig():
-    os.makedirs(get_config_path(), exist_ok=True)
-    copyfile('config.ini', path.join(configpath, 'config.ini'))
+    configpath = get_config_path()
+    os.makedirs(configpath, exist_ok=True)
+    copyfile('config.ini', os.path.join(configpath, 'config.ini'))
 
 def open_file(filename):
     if platform == "win32":
