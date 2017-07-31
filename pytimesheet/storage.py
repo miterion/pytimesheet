@@ -4,7 +4,7 @@ from datetime import datetime
 from os.path import exists
 from os import makedirs
 
-from timetrack.utils import get_config_path
+from pytimesheet.utils import get_config_path
 JOBSPATH = Path(get_config_path()).joinpath('job')
 
 def newjobfolder():

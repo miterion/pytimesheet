@@ -9,8 +9,8 @@ from sys import argv
 from collections import namedtuple
 from random import choice
 
-from timetrack.utils import get_config
-from timetrack import storage, generate
+from pytimesheet.utils import get_config
+from pytimesheet import storage, generate
 
 
 def print_hours(args):

@@ -1,4 +1,4 @@
-from timetrack.utils import get_config, get_config_path, open_file
+from pytimesheet.utils import get_config, get_config_path, open_file
 
 from jinja2 import Environment, FileSystemLoader
 from os import getcwd, path

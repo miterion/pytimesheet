@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
         name='pytimesheet',
-        version='0.0.3',
+        version='0.0.5',
         license='GPL',
         description='timetracking for hiwis at tu darmstadt',
         install_requires =['Jinja2'],
@@ -10,7 +10,7 @@ setup(
         include_package_data=True,
         entry_points={
             'console_scripts': [
-                'timesheet=pytimesheet.cli:main',
+                'pytimesheet=pytimesheet.cli:main',
             ],
         }
 )
