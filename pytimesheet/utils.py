@@ -4,6 +4,7 @@ from os.path import expanduser, exists
 import os 
 from sys import platform
 from subprocess import call
+from pathlib import Path
 
 def get_config_path():
     return os.path.join(os.path.expanduser('~'), '.config', 'timetrack')
@@ -27,3 +28,6 @@ def open_file(filename):
     else:
         opener ="open" if platform == "darwin" else "xdg-open"
         call([opener, filename])
+
+def get_path(filecontent):
+    return Path(filecontent).parent

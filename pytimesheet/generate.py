@@ -1,6 +1,6 @@
-from pytimesheet.utils import get_config, get_config_path, open_file
+from pytimesheet.utils import get_config, get_config_path, open_file, get_path
 
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, PackageLoader
 from os import getcwd, path
 from tempfile import TemporaryDirectory, NamedTemporaryFile
 from subprocess import Popen, PIPE
@@ -10,7 +10,7 @@ from pathlib import Path
 
 def latex(template, context, job, month, output='output.pdf'):
     with TemporaryDirectory() as tmpdir:
-        copy('template/logo.png', tmpdir)
+        copy(str(get_path(__file__)) + '/template/logo.png', tmpdir)
         process = Popen(['pdflatex'], stdin=PIPE, stdout=PIPE, cwd=tmpdir,)
         process.communicate(template.render(context).encode('utf-8'))
         outputpath = path.join(get_config_path(), 'job', str(job), str(month), output)
@@ -27,7 +27,7 @@ def pdf(job, month, period, workdays):
     conffile = get_config()
     config = conffile['Default']
     env = Environment(
-            loader=FileSystemLoader('template')
+            loader=PackageLoader('pytimesheet', 'template')
             )
     templ = env.get_template(config['template'])
     context = {
