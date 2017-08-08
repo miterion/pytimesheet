@@ -6,3 +6,6 @@
 !pytimesheet
 !template
 !config.ini
+!tox.ini
+!.travis.yml
+!tests

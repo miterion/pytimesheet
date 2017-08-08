@@ -1,11 +1,11 @@
 from configparser import ConfigParser
+
 from shutil import copyfile
 from os.path import exists
 import os
 from sys import platform
 from subprocess import call
 from pathlib import Path
-
 
 def get_config_path():
     return os.path.join(os.path.expanduser('~'), '.config', 'timetrack')
