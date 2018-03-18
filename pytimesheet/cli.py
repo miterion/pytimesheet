@@ -4,7 +4,7 @@ import calendar
 from datetime import timedelta
 from sys import argv
 from collections import namedtuple
-from random import choice
+import random
 
 from pytimesheet.utils import get_config
 from pytimesheet import storage, generate
@@ -106,6 +106,9 @@ def generate_hours(args):
                     day['hours'].split(':')[0])),
             days)
         total_duration = sum(worked_hours, timedelta())
+        if total_duration.seconds * 3600 >= int(args.conf[args.job]['hours']):
+            print('You worked enough already')
+            return
         free_days = [
             x for x in calendar.Calendar().itermonthdays2(
                 workmonth.year,
@@ -115,26 +118,52 @@ def generate_hours(args):
                 days)]
     needed_hours = int(args.conf[args.job]['hours']) - \
         total_duration / timedelta(hours=1)
+    # remove weekends from day list
     free_days = filter(lambda x: x[1] not in (5, 6) and x[0] != 0, free_days)
+    # remove weekday from tuple
+    free_days = [x for x,_ in free_days]
     jobtuple = namedtuple('jobtuple', ['job', 'month', 'day', 'hours'])
     jobtuple.job = args.job
     jobtuple.month = args.month
-    workhours = (8, 9, 10, 11, 12, 13, 14, 15, 16, 17)
-    worktime = (0, 1, 2, 3, 4, 5)
-    while needed_hours >= 0:
-        for day in free_days:
-            hours = choice(worktime)
-            if hours > needed_hours:
-                hours = int(needed_hours)
-            if hours != 0:
-                jobtuple.day = day[0]
-                start = choice(workhours)
-                hourlist = [start, start + hours]
-                jobtuple.hours = hourlist
-                add_hours(jobtuple)
-                needed_hours = needed_hours - hours
-            else:
-                return
+    # calculate the already worked days based on average working hours
+    needed_days = max(round(needed_hours / 4) + random.randrange(1,5), len(free_days))
+    # first generate the working hours, max 4h, min 1h
+    working_hours = [min(max(round(random.gauss(4, 0.5)), 1),4) for _ in range(needed_days)]
+    # now generate the start time
+    start_times = [min(max(round(random.gauss(14, 3)), 7), 18) for _ in range(needed_days)]
+    # check whether there are enough or too much hours generated
+    overdraft = round(needed_hours) - sum(working_hours)
+    if overdraft != 0:
+        if overdraft < 0:
+            # too much hours, need to reduce
+            too_much = True
+        elif overdraft > 0:
+            # need more hours
+            too_much = False
+##        for i in sorted(working_hours, reverse=too_much):
+#            index = working_hours.index(i) 
+#            if too_much:
+#                working_hours[index] -= 1
+#            else:
+#                working_hours[index] += 1
+        while overdraft != 0:
+            index = random.randrange(len(working_hours))
+            if too_much and working_hours[index] > 0:
+                working_hours[index] -= 1
+                overdraft += 1
+            elif not too_much and working_hours[index] < 5:
+                working_hours[index] += 1
+                overdraft -= 1
+    # get work days
+    work_days = random.sample(list(free_days), needed_days)
+    # match the start hours with the worked hours and add to storage
+    for i, day in enumerate(work_days):
+        jobtuple.day = day
+        jobtuple.hours = [start_times[i], start_times[i] + working_hours[i]]
+        add_hours(jobtuple)
+    print('Hours generated')
+    print_hours(args)
+
 
 
 def is_standard_or_only_job(config):
