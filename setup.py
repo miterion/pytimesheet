@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
         name='pytimesheet',
-        version='0.0.10',
+        version='0.0.11',
         license='GPL',
         description='timetracking for hiwis at tu darmstadt',
         install_requires =['Jinja2'],
