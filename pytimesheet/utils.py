@@ -1,14 +1,14 @@
 from configparser import ConfigParser
 from shutil import copyfile
-from os.path import exists
+from os.path import exists, join
 import os
 from sys import platform
 from subprocess import call
 from pathlib import Path
-
+from pkg_resources import Requirement, resource_filename
 
 def get_config_path():
-    return os.path.join(os.path.expanduser('~'), '.config', 'timetrack')
+    return os.path.join(os.path.expanduser('~'), '.config', 'pytimesheet')
 
 
 def get_config():
@@ -23,7 +23,8 @@ def get_config():
 def mk_userconfig():
     configpath = get_config_path()
     os.makedirs(configpath, exist_ok=True)
-    copyfile('config.ini', os.path.join(configpath, 'config.ini'))
+    template_config = resource_filename('pytimesheet', 'config.ini')
+    copyfile(template_config, os.path.join(configpath, 'config.ini'))
 
 
 def open_file(filename):

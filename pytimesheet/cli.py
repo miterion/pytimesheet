@@ -140,15 +140,9 @@ def generate_hours(args):
         elif overdraft > 0:
             # need more hours
             too_much = False
-##        for i in sorted(working_hours, reverse=too_much):
-#            index = working_hours.index(i) 
-#            if too_much:
-#                working_hours[index] -= 1
-#            else:
-#                working_hours[index] += 1
         while overdraft != 0:
             index = random.randrange(len(working_hours))
-            if too_much and working_hours[index] > 0:
+            if too_much and working_hours[index] > 1:
                 working_hours[index] -= 1
                 overdraft += 1
             elif not too_much and working_hours[index] < 5:
